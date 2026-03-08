@@ -17,19 +17,20 @@ import {
 } from "./controllers/index.js";
 import { authMiddleware } from "./middleware/auth.js";
 
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 4000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Ensure .env is loaded from the correct location
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
+
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "cse@123";
 const MONGODB_URI = process.env.MONGODB_URI;
 
 // Middleware
 app.use(cors()); // Allow all for production or specify your Render URL
 app.use(express.json());
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Multer Configuration
 const uploadDir = path.join(__dirname, "..", "uploads");
