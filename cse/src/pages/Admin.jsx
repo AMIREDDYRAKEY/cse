@@ -240,16 +240,19 @@ const Admin = () => {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            <div>
+            <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
               <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Security Token</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="input-field"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative group">
+                <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  className="input-field pl-12"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <button className="btn-primary w-full py-4 mt-4 shadow-indigo-500/20">
               Unlock Dashboard

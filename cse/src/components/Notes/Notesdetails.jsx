@@ -102,9 +102,14 @@ const Notesdetails = () => {
             {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-48 skeleton"></div>)}
           </div>
         ) : filteredNotes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-6 glass rounded-3xl border-dashed border-2 border-slate-800 text-center">
-            <HiOutlineBookOpen className="text-6xl text-slate-700 mb-4" />
-            <p className="text-xl text-slate-500 font-medium">No notes found matching your search.</p>
+          <div className="flex flex-col items-center justify-center py-16 px-6 glass rounded-3xl border-dashed border-2 border-slate-800 text-center animate-fade-in w-full">
+            <div className="w-16 h-16 rounded-full bg-slate-800/20 flex items-center justify-center mb-6">
+              <HiOutlineBookOpen className="text-4xl text-slate-600" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">No matches found</h3>
+            <p className="text-slate-500 max-w-xs mx-auto leading-relaxed text-center">
+              We couldn't find any notes matching "<strong>{search}</strong>". Try different keywords or check other years.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">

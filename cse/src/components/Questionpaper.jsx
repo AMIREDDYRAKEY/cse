@@ -67,36 +67,35 @@ const Questionpaper = () => {
           <p className="text-slate-400 animate-pulse">Scanning Archive...</p>
         </div>
       ) : filteredPapers.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
           {filteredPapers.map((paper, index) => (
             <div
               key={paper._id || index}
-              className="card group hover:border-indigo-500/30 transition-all duration-500 flex flex-col justify-between"
+              className="card group hover:border-indigo-500/30 transition-all duration-500"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform duration-500">
+              <div className="flex justify-between items-start mb-6">
+                <div className="w-12 h-12 rounded-xl bg-indigo-600/10 flex items-center justify-center text-indigo-400">
                   <HiOutlineDocumentText size={24} />
                 </div>
-                <div>
-                  <h3 className="font-bold text-white text-lg leading-tight group-hover:text-indigo-400 transition-colors">{paper.title}</h3>
-                  <p className="text-slate-500 text-sm mt-1">{paper.subject}</p>
+                <div className="flex gap-2">
+                  <span className="badge badge-accent text-[10px] uppercase font-bold text-white bg-indigo-500/10 border-indigo-500/20">{paper.year || "N/A"}</span>
+                  <span className="badge badge-accent text-[10px] text-purple-400 bg-purple-500/10 border-purple-500/20">{paper.type || "EXAM"}</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                <div className="flex flex-col">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Session</span>
-                  <span className="text-sm text-slate-300 font-medium">{paper.year} • {paper.type}</span>
-                </div>
+              <h2 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{paper.subject}</h2>
+              <p className="text-slate-400 text-sm mb-6 line-clamp-2">{paper.title}</p>
 
+              <div className="flex items-center justify-between pt-4 border-t border-slate-800/50">
+                <span className="text-xs text-slate-500 italic">Past Examination Paper</span>
                 <a
                   href={paper.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all duration-300 active:scale-95 shadow-lg shadow-indigo-600/0 hover:shadow-indigo-600/20"
+                  className="flex items-center gap-2 text-indigo-400 text-sm font-bold group-hover:underline"
                 >
-                  <HiOutlineDownload size={20} />
+                  Download <HiOutlineDownload />
                 </a>
               </div>
             </div>
