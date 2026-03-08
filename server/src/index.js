@@ -1,0 +1,131 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
+import multer from "multer";
+import fs from "fs";
+
+import {
+  noteController,
+  syllabusController,
+  eventController,
+  contactController,
+  setServicesDbStatus
+} from "./controllers/index.js";
+import { authMiddleware } from "./middleware/auth.js";
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "admin123";
+const MONGODB_URI = process.env.MONGODB_URI;
+
+// Middleware
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"],
+  credentials: true
+}));
+app.use(express.json());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Multer Configuration
+const uploadDir = path.join(__dirname, "..", "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF files are allowed!"), false);
+    }
+  }
+});
+
+// Database Connection
+async function connectDb() {
+  if (!MONGODB_URI) {
+    console.log("No MONGODB_URI found, using JSON fallback.");
+    setServicesDbStatus(false);
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGODB_URI);
+    setServicesDbStatus(true);
+    console.log("🚀 Connected to MongoDB");
+  } catch (err) {
+    console.error("❌ MongoDB Connection Error:", err.message);
+    console.log("Falling back to JSON storage mode.");
+    setServicesDbStatus(false);
+  }
+}
+
+connectDb();
+
+// Auth Routes
+app.post("/api/login", (req, res) => {
+  const { password } = req.body || {};
+  if (password === ADMIN_TOKEN) {
+    return res.json({ token: ADMIN_TOKEN });
+  }
+  res.status(401).json({ error: "Invalid admin credentials" });
+});
+
+// File Upload Endpoint
+app.post("/api/upload", authMiddleware, upload.single("pdf"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  const fileUrl = `/uploads/${req.file.filename}`;
+  res.json({ url: fileUrl });
+});
+
+// Resources API
+app.get("/api/notes", noteController.getAll);
+app.post("/api/notes", authMiddleware, noteController.create);
+app.delete("/api/notes/:id", authMiddleware, noteController.delete);
+
+app.get("/api/syllabus", syllabusController.getAll);
+app.post("/api/syllabus", authMiddleware, syllabusController.create);
+app.delete("/api/syllabus/:id", authMiddleware, syllabusController.delete);
+
+app.get("/api/events", eventController.getAll);
+app.post("/api/events", authMiddleware, eventController.create);
+app.delete("/api/events/:id", authMiddleware, eventController.delete);
+
+app.post("/api/contact", contactController.create);
+app.get("/api/contact", authMiddleware, contactController.getAll);
+
+// Static Files
+const distPath = path.join(__dirname, "..", "..", "cse", "dist");
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+app.use(express.static(distPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
+
+// Server Start
+app.listen(PORT, () => {
+  console.log(`
+  =========================================
+  CSE DEPT SERVER STARTED
+  -----------------------------------------
+  URL: http://localhost:${PORT}
+  API: http://localhost:${PORT}/api
+  =========================================
+  `);
+});
