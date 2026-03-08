@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import QuestionpaperComponent from '../components/Questionpaper';
 import { HiOutlineAcademicCap } from "react-icons/hi";
 
@@ -32,6 +33,7 @@ const QuestionPapers = () => {
 
                 <QuestionpaperComponent />
             </main>
+            <Footer />
         </div>
     );
 };

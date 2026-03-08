@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
+import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
 import { HiOutlineBookOpen, HiOutlineClipboardList, HiOutlineCalendar, HiOutlineArrowNarrowRight } from "react-icons/hi";
 
@@ -92,25 +93,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">C</div>
-            <span className="text-lg font-bold text-white tracking-tight">CSE Dept.</span>
-          </div>
-
-          <p className="text-slate-500 text-sm">
-            © 2024 Computer Science & Engineering Department. Built with ❤️ for students.
-          </p>
-
-          <div className="flex gap-6">
-            <a href="#" className="text-slate-500 hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="text-slate-500 hover:text-white transition-colors">LinkedIn</a>
-            <a href="#" className="text-slate-500 hover:text-white transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
