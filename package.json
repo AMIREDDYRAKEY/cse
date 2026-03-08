@@ -3,7 +3,6 @@
   "private": true,
   "scripts": {
     "start": "node server/src/index.js",
-    "build": "cd server && npm install",
-    "install-all": "npm install && cd cse && npm install && cd ../server && npm install"
+    "build": "npm install && cd cse && npm install && npm run build && cd ../server && npm install"
   }
 }
