@@ -5,12 +5,12 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-[90vh] flex justify-center overflow-hidden bg-grid">
+    <section className="relative min-h-[90vh] flex md:items-center justify-center overflow-hidden bg-grid">
       {/* Decorative Glows */}
       <div className="absolute top-1/4 -left-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 md:pt-48 md:pb-24 flex flex-col md:flex-row items-center justify-between gap-12 relative z-10 text-center md:text-left">
+      <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 md:py-20 flex flex-col md:flex-row items-center justify-between gap-12 relative z-10 text-center md:text-left">
 
         {/* Content Side */}
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start gap-6 md:gap-8 animate-fade-in-up">
