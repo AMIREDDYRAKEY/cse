@@ -468,7 +468,7 @@ const Admin = () => {
                     <select className="input-field bg-[#0c122a]" value={qpForm.type} onChange={e => setQpForm({ ...qpForm, type: e.target.value })}>
                       <option value="Mid-1">Mid-1</option>
                       <option value="Mid-2">Mid-2</option>
-                      <option value="Semester">Semester</option>
+                      <option value="Semester">Prefinals</option>
                       <option value="Supply">Supply</option>
                     </select>
                   </div>

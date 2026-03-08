@@ -25,7 +25,8 @@ const Questionpaper = () => {
 
   const filteredPapers = papers.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      p.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.year && String(p.year).toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesFilter = filterType === "All" || p.type === filterType;
     return matchesSearch && matchesFilter;
   });
