@@ -102,7 +102,7 @@ const Notesdetails = () => {
             {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-48 skeleton"></div>)}
           </div>
         ) : filteredNotes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 glass rounded-3xl border-dashed border-2 border-slate-800">
+          <div className="flex flex-col items-center justify-center py-20 px-6 glass rounded-3xl border-dashed border-2 border-slate-800 text-center">
             <HiOutlineBookOpen className="text-6xl text-slate-700 mb-4" />
             <p className="text-xl text-slate-500 font-medium">No notes found matching your search.</p>
           </div>
