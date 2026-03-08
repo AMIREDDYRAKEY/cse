@@ -16,6 +16,7 @@ const Admin = () => {
   const [notes, setNotes] = useState([]);
   const [syllabus, setSyllabus] = useState([]);
   const [events, setEvents] = useState([]);
+  const [questionPapers, setQuestionPapers] = useState([]);
 
   // Form states
   const [noteForm, setNoteForm] = useState({ title: "", subject: "", unit: "", uploadedBy: "", url: "" });
@@ -24,6 +25,8 @@ const Admin = () => {
   const [syllabusForm, setSyllabusForm] = useState({ course: "", semester: "", subjects: "", url: "" });
   const [syllabusFile, setSyllabusFile] = useState(null);
   const [eventForm, setEventForm] = useState({ name: "", date: "", location: "", description: "" });
+  const [qpForm, setQpForm] = useState({ title: "", subject: "", year: "", type: "Semester", url: "" });
+  const [qpFile, setQpFile] = useState(null);
 
   useEffect(() => {
     if (token) {
@@ -33,14 +36,16 @@ const Admin = () => {
 
   const fetchData = async () => {
     try {
-      const [resNotes, resSyllabus, resEvents] = await Promise.all([
+      const [resNotes, resSyllabus, resEvents, resQP] = await Promise.all([
         fetch("https://cse-rockers-server.onrender.com/api/notes"),
         fetch("https://cse-rockers-server.onrender.com/api/syllabus"),
-        fetch("https://cse-rockers-server.onrender.com/api/events")
+        fetch("https://cse-rockers-server.onrender.com/api/events"),
+        fetch("https://cse-rockers-server.onrender.com/api/question-papers")
       ]);
       setNotes(await resNotes.json());
       setSyllabus(await resSyllabus.json());
       setEvents(await resEvents.json());
+      setQuestionPapers(await resQP.json());
     } catch (err) {
       console.error(err);
     }
@@ -181,6 +186,44 @@ const Admin = () => {
     }
   };
 
+  const handleQpSubmit = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
+    let finalUrl = qpForm.url;
+
+    try {
+      if (qpFile) {
+        const formData = new FormData();
+        formData.append("pdf", qpFile);
+
+        const uploadRes = await fetch("https://cse-rockers-server.onrender.com/api/upload", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          finalUrl = `https://cse-rockers-server.onrender.com${uploadData.url}`;
+        } else {
+          throw new Error("File upload failed");
+        }
+      }
+
+      const success = await apiAction("question-papers", "POST", { ...qpForm, url: finalUrl });
+      if (success) {
+        setQpForm({ title: "", subject: "", year: "", type: "Semester", url: "" });
+        setQpFile(null);
+        const fileInput = document.getElementById("qp-pdf-upload");
+        if (fileInput) fileInput.value = "";
+      }
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   if (!token) {
     return (
       <div className="bg-[#060918] min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
@@ -245,6 +288,7 @@ const Admin = () => {
           <nav className="flex flex-row lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
             <SidebarItem id="notes" label="Notes" icon={HiOutlineBookOpen} />
             <SidebarItem id="syllabus" label="Curriculum" icon={HiOutlineDocumentText} />
+            <SidebarItem id="questionPapers" label="Question Papers" icon={HiOutlineCollection} />
             <SidebarItem id="events" label="Events" icon={HiOutlineCalendar} />
           </nav>
 
@@ -395,6 +439,85 @@ const Admin = () => {
                         <p className="text-xs text-slate-500">{s.semester} Semester • {s.subjects.length} Subjects</p>
                       </div>
                       <button onClick={() => apiAction(`syllabus/${id}`, "DELETE")} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
+                        <HiOutlineTrash size={20} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "questionPapers" && (
+            <div className="space-y-8">
+              <div className="card glass flex flex-col gap-6">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <HiOutlinePlus className="text-indigo-400" /> Upload Question Paper
+                </h2>
+                <form className="space-y-4" onSubmit={handleQpSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input placeholder="Exam Title (e.g. DBMS Mid-1)" className="input-field" value={qpForm.title} onChange={e => setQpForm({ ...qpForm, title: e.target.value })} required />
+                    <input placeholder="Subject" className="input-field" value={qpForm.subject} onChange={e => setQpForm({ ...qpForm, subject: e.target.value })} required />
+                    <input placeholder="Year (e.g. 2023-24)" className="input-field" value={qpForm.year} onChange={e => setQpForm({ ...qpForm, year: e.target.value })} required />
+                    <select className="input-field bg-[#0c122a]" value={qpForm.type} onChange={e => setQpForm({ ...qpForm, type: e.target.value })}>
+                      <option value="Mid-1">Mid-1</option>
+                      <option value="Mid-2">Mid-2</option>
+                      <option value="Semester">Semester</option>
+                      <option value="Supply">Supply</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Select PDF Paper</label>
+                    <div className="relative group/file">
+                      <input
+                        id="qp-pdf-upload"
+                        type="file"
+                        accept=".pdf"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        onChange={e => setQpFile(e.target.files[0])}
+                      />
+                      <div className="input-field flex items-center gap-3 bg-slate-900/50 group-hover/file:border-indigo-500/50 transition-colors">
+                        <HiOutlineCloudUpload className="text-indigo-400" size={20} />
+                        <span className="text-slate-400 truncate">
+                          {qpFile ? qpFile.name : "Select Paper file..."}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className={`btn-primary w-full flex items-center justify-center gap-2 ${isUploading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    {isUploading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Uploading...
+                      </>
+                    ) : (
+                      "Publish Question Paper"
+                    )}
+                  </button>
+                </form>
+              </div>
+
+              <div className="grid gap-4">
+                {questionPapers.map(qp => {
+                  const id = qp._id || qp.id;
+                  return (
+                    <div key={id} className="card p-4 flex items-center justify-between border-slate-800 group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                          <HiOutlineDocumentText />
+                        </div>
+                        <div>
+                          <p className="font-bold text-white">{qp.title}</p>
+                          <p className="text-xs text-slate-500">{qp.subject} • {qp.year} • {qp.type}</p>
+                        </div>
+                      </div>
+                      <button onClick={() => apiAction(`question-papers/${id}`, "DELETE")} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
                         <HiOutlineTrash size={20} />
                       </button>
                     </div>

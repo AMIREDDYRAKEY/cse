@@ -26,6 +26,13 @@ const Home = () => {
       icon: <HiOutlineCalendar className="text-3xl text-teal-400" />,
       link: "/events",
       delay: "200ms"
+    },
+    {
+      title: "Question Papers",
+      desc: "Previous years' papers and model questions for mid-exams and semester finals.",
+      icon: <HiOutlineClipboardList className="text-3xl text-teal-400" />,
+      link: "/question-papers",
+      delay: "300ms"
     }
   ];
 

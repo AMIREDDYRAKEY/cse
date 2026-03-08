@@ -12,6 +12,7 @@ import {
   syllabusController,
   eventController,
   contactController,
+  questionPaperController,
   setServicesDbStatus
 } from "./controllers/index.js";
 import { authMiddleware } from "./middleware/auth.js";
@@ -105,6 +106,10 @@ app.delete("/api/events/:id", authMiddleware, eventController.delete);
 
 app.post("/api/contact", contactController.create);
 app.get("/api/contact", authMiddleware, contactController.getAll);
+
+app.get("/api/question-papers", questionPaperController.getAll);
+app.post("/api/question-papers", authMiddleware, questionPaperController.create);
+app.delete("/api/question-papers/:id", authMiddleware, questionPaperController.delete);
 
 // Static Files
 const distPath = path.join(__dirname, "..", "..", "cse", "dist");

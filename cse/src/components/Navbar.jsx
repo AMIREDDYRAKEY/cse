@@ -19,6 +19,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Notes", path: "/notes" },
     { name: "Syllabus", path: "/syllabus" },
+    { name: "Papers", path: "/question-papers" },
     { name: "Events", path: "/events" },
     // { name: "Faculty", path: "/faculty" },
     { name: "Contact", path: "/contact" },
@@ -29,7 +30,7 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 px-6 py-4 ${scrolled ? "glass-strong py-3 shadow-2xl" : "bg-transparent"
-        }`}
+        } md:!absolute`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}

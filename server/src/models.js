@@ -35,3 +35,13 @@ const contactSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 export const Contact = mongoose.model("Contact", contactSchema);
+
+const questionPaperSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  subject: { type: String, required: true },
+  year: { type: String, required: true },
+  type: { type: String, enum: ["Mid-1", "Mid-2", "Semester", "Supply"], default: "Semester" },
+  url: { type: String, default: "" }
+}, { timestamps: true });
+
+export const QuestionPaper = mongoose.model("QuestionPaper", questionPaperSchema);

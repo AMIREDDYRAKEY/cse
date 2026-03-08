@@ -1,4 +1,4 @@
-import { Note, Syllabus, Event, Contact } from "../models.js";
+import { Note, Syllabus, Event, Contact, QuestionPaper } from "../models.js";
 import { DataProvider } from "../dataProvider.js";
 import { sendContactEmail } from "../utils/email.js";
 
@@ -6,12 +6,14 @@ const noteService = new DataProvider(Note, "notes.json");
 const syllabusService = new DataProvider(Syllabus, "syllabus.json");
 const eventService = new DataProvider(Event, "events.json");
 const contactService = new DataProvider(Contact, "contacts.json");
+const questionPaperService = new DataProvider(QuestionPaper, "questionPapers.json");
 
 export const setServicesDbStatus = (status) => {
     noteService.setDbReady(status);
     syllabusService.setDbReady(status);
     eventService.setDbReady(status);
     contactService.setDbReady(status);
+    questionPaperService.setDbReady(status);
 };
 
 // Generic Controller Factory
@@ -45,6 +47,7 @@ const createController = (service) => ({
 export const noteController = createController(noteService);
 export const syllabusController = createController(syllabusService);
 export const eventController = createController(eventService);
+export const questionPaperController = createController(questionPaperService);
 
 const baseContactController = createController(contactService);
 export const contactController = {
