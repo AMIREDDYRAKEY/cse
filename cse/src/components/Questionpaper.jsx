@@ -75,7 +75,7 @@ const Questionpaper = () => {
             </select>
           </div>
 
-          <div className="flex bg-slate-900/40 p-1 rounded-xl border border-slate-800/50 backdrop-blur-md w-full md:w-auto overflow-x-auto">
+          <div className="flex bg-slate-900/40 p-1 rounded-xl border border-slate-800/50 backdrop-blur-md w-full md:w-auto overflow-x-auto hide-scrollbar">
             {["All", "1st", "2nd", "3rd", "4th"].map((yr) => (
               <button
                 key={yr}

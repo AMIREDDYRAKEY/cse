@@ -46,6 +46,7 @@ body {
 /* scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-primary);
@@ -53,6 +54,15 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--accent-secondary);
   border-radius: 3px;
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ===== Animations ===== */
