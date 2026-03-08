@@ -64,7 +64,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-bold">Address</p>
-                    <p className="text-sm text-slate-400">Block B, CSE Building, Engineering Campus, Hyderabad, India.</p>
+                    <p className="text-sm text-slate-400"> @Cse AITS KADAPA, C.K.Dinne, India.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
