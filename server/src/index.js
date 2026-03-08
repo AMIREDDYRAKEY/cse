@@ -112,12 +112,14 @@ app.post("/api/question-papers", authMiddleware, questionPaperController.create)
 app.delete("/api/question-papers/:id", authMiddleware, questionPaperController.delete);
 
 // Static Files
-const distPath = path.join(__dirname, "..", "..", "cse", "dist");
-app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+const distPath = path.resolve(__dirname, "../../cse/dist");
+const uploadsPath = path.resolve(__dirname, "../uploads");
+
+app.use("/uploads", express.static(uploadsPath));
 app.use(express.static(distPath));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+  res.sendFile(path.resolve(distPath, "index.html"));
 });
 
 // Server Start
