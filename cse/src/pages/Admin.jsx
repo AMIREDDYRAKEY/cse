@@ -20,6 +20,7 @@ const Admin = () => {
 
   // Form states
   const [noteForm, setNoteForm] = useState({ title: "", subject: "", unit: "", year: "1st", uploadedBy: "", url: "" });
+  const [noteFile, setNoteFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [syllabusForm, setSyllabusForm] = useState({ course: "", semester: "", subjects: "", url: "" });
   const [syllabusFile, setSyllabusFile] = useState(null);
