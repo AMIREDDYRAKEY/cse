@@ -25,7 +25,8 @@ const Admin = () => {
   const [syllabusForm, setSyllabusForm] = useState({ course: "", semester: "", subjects: "", url: "" });
   const [syllabusFile, setSyllabusFile] = useState(null);
   const [eventForm, setEventForm] = useState({ name: "", date: "", location: "", description: "" });
-  const [qpForm, setQpForm] = useState({ title: "", subject: "", year: "", type: "Semester", url: "" });
+  const [qpForm, setQpForm] = useState({ title: "", subject: "", year: "1st", type: "Semester", url: "" });
+
   const [qpFile, setQpFile] = useState(null);
 
   useEffect(() => {
@@ -212,7 +213,7 @@ const Admin = () => {
 
       const success = await apiAction("question-papers", "POST", { ...qpForm, url: finalUrl });
       if (success) {
-        setQpForm({ title: "", subject: "", year: "", type: "Semester", url: "" });
+        setQpForm({ title: "", subject: "", year: "1st", type: "Semester", url: "" });
         setQpFile(null);
         const fileInput = document.getElementById("qp-pdf-upload");
         if (fileInput) fileInput.value = "";
@@ -467,7 +468,12 @@ const Admin = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input placeholder="Exam Title (e.g. DBMS Mid-1)" className="input-field" value={qpForm.title} onChange={e => setQpForm({ ...qpForm, title: e.target.value })} required />
                     <input placeholder="Subject" className="input-field" value={qpForm.subject} onChange={e => setQpForm({ ...qpForm, subject: e.target.value })} required />
-                    <input placeholder="Year (e.g. 2023-24)" className="input-field" value={qpForm.year} onChange={e => setQpForm({ ...qpForm, year: e.target.value })} required />
+                    <select className="input-field bg-[#0c122a]" value={qpForm.year} onChange={e => setQpForm({ ...qpForm, year: e.target.value })}>
+                      <option value="1st">1st Year</option>
+                      <option value="2nd">2nd Year</option>
+                      <option value="3rd">3rd Year</option>
+                      <option value="4th">4th Year</option>
+                    </select>
                     <select className="input-field bg-[#0c122a]" value={qpForm.type} onChange={e => setQpForm({ ...qpForm, type: e.target.value })}>
                       <option value="Mid-1">Mid-1</option>
                       <option value="Mid-2">Mid-2</option>
