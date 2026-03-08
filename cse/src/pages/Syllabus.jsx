@@ -8,7 +8,7 @@ const Syllabus = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/syllabus")
+    fetch("https://cse-rockers-server.onrender.com/api/syllabus")
       .then((res) => res.json())
       .then((data) => {
         setSyllabus(data);
@@ -84,7 +84,8 @@ const Syllabus = () => {
                     </button>
                   </div>
                 </div>
-              );})}
+              );
+            })}
           </div>
         )}
         {/* Syllabus Details Modal */}

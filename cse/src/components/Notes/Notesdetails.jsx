@@ -10,7 +10,7 @@ const Notesdetails = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/notes")
+    fetch("https://cse-rockers-server.onrender.com/api/notes")
       .then((res) => res.json())
       .then((data) => {
         setNotes(data);

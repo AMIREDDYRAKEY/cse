@@ -22,7 +22,7 @@ const Contact = () => {
     const toastId = toast.loading('Sending your message...');
 
     try {
-      const response = await fetch('http://localhost:4000/api/contact', {
+      const response = await fetch('https://cse-rockers-server.onrender.com/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

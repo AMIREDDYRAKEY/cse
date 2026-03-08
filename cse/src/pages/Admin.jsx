@@ -34,9 +34,9 @@ const Admin = () => {
   const fetchData = async () => {
     try {
       const [resNotes, resSyllabus, resEvents] = await Promise.all([
-        fetch("http://localhost:4000/api/notes"),
-        fetch("http://localhost:4000/api/syllabus"),
-        fetch("http://localhost:4000/api/events")
+        fetch("https://cse-rockers-server.onrender.com/api/notes"),
+        fetch("https://cse-rockers-server.onrender.com/api/syllabus"),
+        fetch("https://cse-rockers-server.onrender.com/api/events")
       ]);
       setNotes(await resNotes.json());
       setSyllabus(await resSyllabus.json());
@@ -50,7 +50,7 @@ const Admin = () => {
     e.preventDefault();
     const toastId = toast.loading('Authenticating...');
     try {
-      const res = await fetch("http://localhost:4000/api/login", {
+      const res = await fetch("https://cse-rockers-server.onrender.com/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -76,7 +76,7 @@ const Admin = () => {
 
   const apiAction = async (path, method, body = null, successMsg = "Action completed") => {
     try {
-      const res = await fetch(`http://localhost:4000/api/${path}`, {
+      const res = await fetch(`https://cse-rockers-server.onrender.com/api/${path}`, {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const Admin = () => {
         const formData = new FormData();
         formData.append("pdf", noteFile);
 
-        const uploadRes = await fetch("http://localhost:4000/api/upload", {
+        const uploadRes = await fetch("https://cse-rockers-server.onrender.com/api/upload", {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
@@ -116,7 +116,7 @@ const Admin = () => {
 
         if (uploadRes.ok) {
           const uploadData = await uploadRes.json();
-          finalUrl = `http://localhost:4000${uploadData.url}`;
+          finalUrl = `https://cse-rockers-server.onrender.com${uploadData.url}`;
         } else {
           throw new Error("File upload failed");
         }
@@ -147,7 +147,7 @@ const Admin = () => {
         const formData = new FormData();
         formData.append("pdf", syllabusFile);
 
-        const uploadRes = await fetch("http://localhost:4000/api/upload", {
+        const uploadRes = await fetch("https://cse-rockers-server.onrender.com/api/upload", {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
@@ -155,7 +155,7 @@ const Admin = () => {
 
         if (uploadRes.ok) {
           const uploadData = await uploadRes.json();
-          finalUrl = `http://localhost:4000${uploadData.url}`;
+          finalUrl = `https://cse-rockers-server.onrender.com${uploadData.url}`;
         } else {
           throw new Error("File upload failed");
         }
