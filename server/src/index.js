@@ -21,7 +21,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "admin123";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "cse@123";
 const MONGODB_URI = process.env.MONGODB_URI;
 
 // Middleware
