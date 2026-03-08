@@ -10,9 +10,14 @@ const Footer = () => {
                     <span className="text-lg font-bold text-white tracking-tight">CSE Dept.</span>
                 </div>
 
-                <p className="text-slate-500 text-sm text-center">
-                    © {new Date().getFullYear()} CSE Department. All rights reserved.
-                </p>
+                <div className="flex flex-col items-center">
+                    <p className="text-slate-500 text-sm text-center">
+                        © {new Date().getFullYear()} CSE Department. All rights reserved.
+                    </p>
+                    <p className="text-slate-600 text-xs text-center mt-1">
+                        AITS Kadapa, C.K. Dinne
+                    </p>
+                </div>
 
                 <div className="flex gap-4">
                     <a href="#" className="text-slate-400 hover:text-white transition-colors p-2"><FaTwitter size={18} /></a>
