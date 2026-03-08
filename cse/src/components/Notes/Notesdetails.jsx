@@ -8,6 +8,7 @@ const Notesdetails = () => {
   const [activeNote, setActiveNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [activeYear, setActiveYear] = useState("All");
 
   useEffect(() => {
     fetch("https://cse-rockers-server.onrender.com/api/notes")
@@ -23,15 +24,24 @@ const Notesdetails = () => {
       });
   }, []);
 
-  const handleSearch = (e) => {
-    const val = e.target.value.toLowerCase();
-    setSearch(val);
+  useEffect(() => {
+    applyFilters(search, activeYear);
+  }, [search, activeYear, notes]);
+
+  const applyFilters = (searchTerm, yearTerm) => {
+    const sTerm = searchTerm.toLowerCase();
     setFilteredNotes(
-      notes.filter(n =>
-        n.title.toLowerCase().includes(val) ||
-        n.subject.toLowerCase().includes(val)
-      )
+      notes.filter(n => {
+        const matchesSearch = n.title.toLowerCase().includes(sTerm) ||
+          n.subject.toLowerCase().includes(sTerm);
+        const matchesYear = yearTerm === "All" || n.year === yearTerm;
+        return matchesSearch && matchesYear;
+      })
     );
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
   };
 
   return (
@@ -47,25 +57,42 @@ const Notesdetails = () => {
             <p className="text-slate-400 mt-2">Access high-quality lecture materials and resources.</p>
           </div>
 
-          <div className="relative w-full md:w-96 group">
-            <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
-            <div className="relative flex items-center">
-              <HiOutlineSearch className="absolute left-4 text-slate-500 text-xl group-focus-within:text-indigo-400 transition-colors" />
-              <input
-                type="text"
-                placeholder="Search subjects, topics..."
-                className="input-field pl-12 pr-10 w-full bg-slate-900/40 border-slate-800/50 backdrop-blur-md focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-                value={search}
-                onChange={handleSearch}
-              />
-              {search && (
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+            <div className="relative w-full md:w-80 group">
+              <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+              <div className="relative flex items-center">
+                <HiOutlineSearch className="absolute left-4 text-slate-500 text-xl group-focus-within:text-indigo-400 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Search subjects, topics..."
+                  className="input-field pl-12 pr-10 w-full bg-slate-900/40 border-slate-800/50 backdrop-blur-md focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                  value={search}
+                  onChange={handleSearch}
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-4 text-slate-500 hover:text-white transition-colors"
+                  >
+                    <HiX className="text-lg" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex bg-slate-900/40 p-1 rounded-xl border border-slate-800/50 backdrop-blur-md">
+              {["All", "1st", "2nd", "3rd", "4th"].map((yr) => (
                 <button
-                  onClick={() => { setSearch(""); setFilteredNotes(notes); }}
-                  className="absolute right-4 text-slate-500 hover:text-white transition-colors"
+                  key={yr}
+                  onClick={() => setActiveYear(yr)}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeYear === yr
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                    : "text-slate-500 hover:text-slate-300"
+                    }`}
                 >
-                  <HiX className="text-lg" />
+                  {yr === "All" ? "ALL" : `${yr} YR`}
                 </button>
-              )}
+              ))}
             </div>
           </div>
         </div>
@@ -93,7 +120,10 @@ const Notesdetails = () => {
                     <div className="w-12 h-12 rounded-xl bg-indigo-600/10 flex items-center justify-center text-indigo-400">
                       <HiOutlineBookOpen size={24} />
                     </div>
-                    <span className="badge badge-accent text-[10px]">{note.unit ? `UNIT ${note.unit}` : "GENERAL"}</span>
+                    <div className="flex gap-2">
+                      <span className="badge badge-accent text-[10px] uppercase font-bold">{note.year || "Gen"} YR</span>
+                      <span className="badge badge-accent text-[10px]">{note.unit ? `UNIT ${note.unit}` : "GENERAL"}</span>
+                    </div>
                   </div>
 
                   <h2 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{note.subject}</h2>
@@ -124,6 +154,10 @@ const Notesdetails = () => {
               </div>
 
               <div className="space-y-4 mb-10 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Academic Year</span>
+                  <span className="text-white font-semibold">{activeNote.year ? `${activeNote.year} Year` : "N/A"}</span>
+                </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500">Unit Number</span>
                   <span className="text-white font-semibold">{activeNote.unit || "N/A"}</span>

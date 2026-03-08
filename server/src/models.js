@@ -4,6 +4,7 @@ const noteSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subject: { type: String, required: true },
   unit: { type: String, default: "" },
+  year: { type: String, enum: ["1st", "2nd", "3rd", "4th"], default: "1st" },
   uploadedBy: { type: String, default: "Faculty" },
   date: { type: Date, default: Date.now },
   url: { type: String, default: "" }

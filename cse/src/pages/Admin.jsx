@@ -19,8 +19,7 @@ const Admin = () => {
   const [questionPapers, setQuestionPapers] = useState([]);
 
   // Form states
-  const [noteForm, setNoteForm] = useState({ title: "", subject: "", unit: "", uploadedBy: "", url: "" });
-  const [noteFile, setNoteFile] = useState(null);
+  const [noteForm, setNoteForm] = useState({ title: "", subject: "", unit: "", year: "1st", uploadedBy: "", url: "" });
   const [isUploading, setIsUploading] = useState(false);
   const [syllabusForm, setSyllabusForm] = useState({ course: "", semester: "", subjects: "", url: "" });
   const [syllabusFile, setSyllabusFile] = useState(null);
@@ -129,7 +128,7 @@ const Admin = () => {
 
       const success = await apiAction("notes", "POST", { ...noteForm, url: finalUrl });
       if (success) {
-        setNoteForm({ title: "", subject: "", unit: "", uploadedBy: "", url: "" });
+        setNoteForm({ title: "", subject: "", unit: "", year: "1st", uploadedBy: "", url: "" });
         setNoteFile(null);
         // Reset file input manually
         const fileInput = document.getElementById("pdf-upload");
@@ -315,6 +314,12 @@ const Admin = () => {
                   <input placeholder="Document Title" className="input-field" value={noteForm.title} onChange={e => setNoteForm({ ...noteForm, title: e.target.value })} required />
                   <input placeholder="Subject (e.g. OS, DBMS)" className="input-field" value={noteForm.subject} onChange={e => setNoteForm({ ...noteForm, subject: e.target.value })} required />
                   <input placeholder="Unit Number" className="input-field" value={noteForm.unit} onChange={e => setNoteForm({ ...noteForm, unit: e.target.value })} />
+                  <select className="input-field bg-[#0c122a]" value={noteForm.year} onChange={e => setNoteForm({ ...noteForm, year: e.target.value })}>
+                    <option value="1st">1st Year</option>
+                    <option value="2nd">2nd Year</option>
+                    <option value="3rd">3rd Year</option>
+                    <option value="4th">4th Year</option>
+                  </select>
                   <input placeholder="Contributor Name" className="input-field" value={noteForm.uploadedBy} onChange={e => setNoteForm({ ...noteForm, uploadedBy: e.target.value })} />
 
                   <div className="md:col-span-2">
@@ -367,7 +372,7 @@ const Admin = () => {
                         </div>
                         <div>
                           <p className="font-bold text-white">{n.title}</p>
-                          <p className="text-xs text-slate-500">{n.subject} • Unit {n.unit || "All"}</p>
+                          <p className="text-xs text-slate-500">{n.subject} • Unit {n.unit || "All"} • {n.year || "N/A"}</p>
                         </div>
                       </div>
                       <button onClick={() => apiAction(`notes/${id}`, "DELETE")} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
