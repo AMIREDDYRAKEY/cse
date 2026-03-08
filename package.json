@@ -1,0 +1,10 @@
+{
+  "name": "cse-website-root",
+  "private": true,
+  "scripts": {
+    "install-all": "npm install && cd cse && npm install && cd ../server && npm install",
+    "build-frontend": "cd cse && npm run build",
+    "start-frontend": "cd cse && npm run dev",
+    "start-backend": "cd server && npm start"
+  }
+}
