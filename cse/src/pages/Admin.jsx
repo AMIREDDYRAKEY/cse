@@ -19,13 +19,13 @@ const Admin = () => {
   const [questionPapers, setQuestionPapers] = useState([]);
 
   // Form states
-  const [noteForm, setNoteForm] = useState({ title: "", subject: "", unit: "", year: "1st", uploadedBy: "", url: "" });
+  const [noteForm, setNoteForm] = useState({ title: "", subject: "", unit: "", year: "1st", semester: "1st", uploadedBy: "", url: "" });
   const [noteFile, setNoteFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [syllabusForm, setSyllabusForm] = useState({ course: "", semester: "", subjects: "", url: "" });
   const [syllabusFile, setSyllabusFile] = useState(null);
   const [eventForm, setEventForm] = useState({ name: "", date: "", location: "", description: "" });
-  const [qpForm, setQpForm] = useState({ title: "", subject: "", year: "1st", type: "Semester", url: "" });
+  const [qpForm, setQpForm] = useState({ title: "", subject: "", year: "1st", semester: "1st", type: "Semester", url: "" });
 
   const [qpFile, setQpFile] = useState(null);
 
@@ -130,7 +130,7 @@ const Admin = () => {
 
       const success = await apiAction("notes", "POST", { ...noteForm, url: finalUrl });
       if (success) {
-        setNoteForm({ title: "", subject: "", unit: "", year: "1st", uploadedBy: "", url: "" });
+        setNoteForm({ title: "", subject: "", unit: "", year: "1st", semester: "1st", uploadedBy: "", url: "" });
         setNoteFile(null);
         // Reset file input manually
         const fileInput = document.getElementById("pdf-upload");
@@ -213,7 +213,7 @@ const Admin = () => {
 
       const success = await apiAction("question-papers", "POST", { ...qpForm, url: finalUrl });
       if (success) {
-        setQpForm({ title: "", subject: "", year: "1st", type: "Semester", url: "" });
+        setQpForm({ title: "", subject: "", year: "1st", semester: "1st", type: "Semester", url: "" });
         setQpFile(null);
         const fileInput = document.getElementById("qp-pdf-upload");
         if (fileInput) fileInput.value = "";
@@ -325,6 +325,10 @@ const Admin = () => {
                     <option value="3rd">3rd Year</option>
                     <option value="4th">4th Year</option>
                   </select>
+                  <select className="input-field bg-[#0c122a]" value={noteForm.semester} onChange={e => setNoteForm({ ...noteForm, semester: e.target.value })}>
+                    <option value="1st">1st Semester</option>
+                    <option value="2nd">2nd Semester</option>
+                  </select>
                   <input placeholder="Contributor Name" className="input-field" value={noteForm.uploadedBy} onChange={e => setNoteForm({ ...noteForm, uploadedBy: e.target.value })} />
 
                   <div className="md:col-span-2">
@@ -377,7 +381,7 @@ const Admin = () => {
                         </div>
                         <div>
                           <p className="font-bold text-white">{n.title}</p>
-                          <p className="text-xs text-slate-500">{n.subject} • Unit {n.unit || "All"} • {n.year || "N/A"}</p>
+                          <p className="text-xs text-slate-500">{n.subject} • Unit {n.unit || "All"} • {n.year || "N/A"} • {n.semester ? `${n.semester} Sem` : "N/A"}</p>
                         </div>
                       </div>
                       <button onClick={() => apiAction(`notes/${id}`, "DELETE")} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
@@ -474,6 +478,10 @@ const Admin = () => {
                       <option value="3rd">3rd Year</option>
                       <option value="4th">4th Year</option>
                     </select>
+                    <select className="input-field bg-[#0c122a]" value={qpForm.semester} onChange={e => setQpForm({ ...qpForm, semester: e.target.value })}>
+                      <option value="1st">1st Semester</option>
+                      <option value="2nd">2nd Semester</option>
+                    </select>
                     <select className="input-field bg-[#0c122a]" value={qpForm.type} onChange={e => setQpForm({ ...qpForm, type: e.target.value })}>
                       <option value="Mid-1">Mid-1</option>
                       <option value="Mid-2">Mid-2</option>
@@ -529,7 +537,7 @@ const Admin = () => {
                         </div>
                         <div>
                           <p className="font-bold text-white">{qp.title}</p>
-                          <p className="text-xs text-slate-500">{qp.subject} • {qp.year} • {qp.type}</p>
+                          <p className="text-xs text-slate-500">{qp.subject} • {qp.year} • {qp.semester ? `${qp.semester} Sem` : "N/A"} • {qp.type}</p>
                         </div>
                       </div>
                       <button onClick={() => apiAction(`question-papers/${id}`, "DELETE")} className="p-2 text-slate-600 hover:text-red-500 transition-colors">

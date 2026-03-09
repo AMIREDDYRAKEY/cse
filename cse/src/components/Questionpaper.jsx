@@ -6,6 +6,7 @@ const Questionpaper = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
   const [activeYear, setActiveYear] = useState("All");
+  const [activeSemester, setActiveSemester] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +31,8 @@ const Questionpaper = () => {
       (p.year && String(p.year).toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesFilter = filterType === "All" || p.type === filterType;
     const matchesYear = activeYear === "All" || p.year === activeYear || (p.year && String(p.year).includes(activeYear));
-    return matchesSearch && matchesFilter && matchesYear;
+    const matchesSemester = activeSemester === "All" || p.semester === activeSemester;
+    return matchesSearch && matchesFilter && matchesYear && matchesSemester;
   });
 
 
@@ -89,6 +91,21 @@ const Questionpaper = () => {
               </button>
             ))}
           </div>
+
+          <div className="flex bg-slate-900/40 p-1 rounded-xl border border-slate-800/50 backdrop-blur-md w-full md:w-auto overflow-x-auto hide-scrollbar">
+            {["All", "1st", "2nd"].map((sem) => (
+              <button
+                key={sem}
+                onClick={() => setActiveSemester(sem)}
+                className={`flex-1 px-4 py-2 flex items-center justify-center rounded-lg text-xs font-bold transition-all whitespace-nowrap ${activeSemester === sem
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                  : "text-slate-500 hover:text-slate-300"
+                  }`}
+              >
+                {sem === "All" ? "ALL SEM" : `${sem} SEM`}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -109,8 +126,10 @@ const Questionpaper = () => {
                 <div className="w-12 h-12 rounded-xl bg-indigo-600/10 flex items-center justify-center text-indigo-400">
                   <HiOutlineDocumentText size={24} />
                 </div>
-                <div className="flex gap-2">
-                  <span className="badge badge-accent text-[10px] uppercase font-bold text-white bg-indigo-500/10 border-indigo-500/20">{paper.year || "N/A"}</span>
+                <div className="flex gap-2 flex-wrap">
+                  <span className="badge badge-accent text-[10px] uppercase font-bold text-white bg-indigo-500/10 border-indigo-500/20">
+                    {paper.year || "N/A"} {paper.semester ? `| ${paper.semester} SEM` : ""}
+                  </span>
                   <span className="badge badge-accent text-[10px] text-purple-400 bg-purple-500/10 border-purple-500/20">{paper.type || "EXAM"}</span>
                 </div>
               </div>

@@ -9,6 +9,7 @@ const Notesdetails = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeYear, setActiveYear] = useState("All");
+  const [activeSemester, setActiveSemester] = useState("All");
 
   useEffect(() => {
     fetch("https://cse-rockers-server.onrender.com/api/notes")
@@ -25,17 +26,18 @@ const Notesdetails = () => {
   }, []);
 
   useEffect(() => {
-    applyFilters(search, activeYear);
-  }, [search, activeYear, notes]);
+    applyFilters(search, activeYear, activeSemester);
+  }, [search, activeYear, activeSemester, notes]);
 
-  const applyFilters = (searchTerm, yearTerm) => {
+  const applyFilters = (searchTerm, yearTerm, semesterTerm) => {
     const sTerm = searchTerm.toLowerCase();
     setFilteredNotes(
       notes.filter(n => {
         const matchesSearch = n.title.toLowerCase().includes(sTerm) ||
           n.subject.toLowerCase().includes(sTerm);
         const matchesYear = yearTerm === "All" || n.year === yearTerm;
-        return matchesSearch && matchesYear;
+        const matchesSemester = semesterTerm === "All" || n.semester === semesterTerm;
+        return matchesSearch && matchesYear && matchesSemester;
       })
     );
   };
@@ -90,7 +92,22 @@ const Notesdetails = () => {
                     : "text-slate-500 hover:text-slate-300"
                     }`}
                 >
-                  {yr === "All" ? "ALL" : `${yr} YR`}
+                  {yr === "All" ? "ALL YRS" : `${yr} YR`}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex bg-slate-900/40 p-1 rounded-xl border border-slate-800/50 backdrop-blur-md w-full md:w-auto overflow-x-auto hide-scrollbar">
+              {["All", "1st", "2nd"].map((sem) => (
+                <button
+                  key={sem}
+                  onClick={() => setActiveSemester(sem)}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeSemester === sem
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                    : "text-slate-500 hover:text-slate-300"
+                    }`}
+                >
+                  {sem === "All" ? "ALL SEMS" : `${sem} SEM`}
                 </button>
               ))}
             </div>
@@ -125,9 +142,11 @@ const Notesdetails = () => {
                     <div className="w-12 h-12 rounded-xl bg-indigo-600/10 flex items-center justify-center text-indigo-400">
                       <HiOutlineBookOpen size={24} />
                     </div>
-                    <div className="flex gap-2">
-                      <span className="badge badge-accent text-[10px] uppercase font-bold">{note.year || "Gen"} YR</span>
-                      <span className="badge badge-accent text-[10px]">{note.unit ? `UNIT ${note.unit}` : "GENERAL"}</span>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="badge badge-accent text-[10px] uppercase font-bold">
+                        {note.year || "Gen"} YR {note.semester ? `| ${note.semester} SEM` : ""}
+                      </span>
+                      <span className="badge badge-accent text-[10px] uppercase font-bold">{note.unit ? `UNIT ${note.unit}` : "GENERAL"}</span>
                     </div>
                   </div>
 
@@ -162,6 +181,10 @@ const Notesdetails = () => {
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500">Academic Year</span>
                   <span className="text-white font-semibold">{activeNote.year ? `${activeNote.year} Year` : "N/A"}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Semester</span>
+                  <span className="text-white font-semibold">{activeNote.semester ? `${activeNote.semester} Semester` : "N/A"}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500">Unit Number</span>

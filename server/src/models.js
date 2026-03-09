@@ -5,6 +5,7 @@ const noteSchema = new mongoose.Schema({
   subject: { type: String, required: true },
   unit: { type: String, default: "" },
   year: { type: String, enum: ["1st", "2nd", "3rd", "4th"], default: "1st" },
+  semester: { type: String, enum: ["1st", "2nd"], default: "1st" },
   uploadedBy: { type: String, default: "Faculty" },
   date: { type: Date, default: Date.now },
   url: { type: String, default: "" }
@@ -41,6 +42,7 @@ const questionPaperSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subject: { type: String, required: true },
   year: { type: String, required: true },
+  semester: { type: String, enum: ["1st", "2nd"], default: "1st" },
   type: { type: String, enum: ["Mid-1", "Mid-2", "Semester", "Supply"], default: "Semester" },
   url: { type: String, default: "" }
 }, { timestamps: true });
