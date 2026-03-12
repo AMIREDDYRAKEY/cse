@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
 import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
 
 import {
   noteController,
@@ -24,6 +25,13 @@ const __dirname = path.dirname(__filename);
 
 // Ensure .env is loaded from the correct location
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
+
+// Cloudinary Configuration
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
+});
 
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "cse@123";
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -86,10 +94,25 @@ app.post("/api/login", (req, res) => {
 });
 
 // File Upload Endpoint
-app.post("/api/upload", authMiddleware, upload.single("pdf"), (req, res) => {
+app.post("/api/upload", authMiddleware, upload.single("pdf"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl });
+  
+  try {
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "auto",
+      folder: "cse_dept_uploads"
+    });
+    
+    // Delete the local file after successful upload
+    fs.unlinkSync(req.file.path);
+
+    res.json({ url: uploadResult.secure_url });
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    // Try to clean up local file if upload fails
+    try { fs.unlinkSync(req.file.path); } catch (e) {}
+    res.status(500).json({ error: "File upload failed" });
+  }
 });
 
 // Resources API
