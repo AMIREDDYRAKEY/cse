@@ -124,7 +124,12 @@ const Admin = () => {
           const uploadData = await uploadRes.json();
           finalUrl = `https://cse-rockers-server.onrender.com${uploadData.url}`;
         } else {
-          throw new Error("File upload failed");
+          try {
+            const errData = await uploadRes.json();
+            throw new Error(errData.error || "File upload failed");
+          } catch(e) {
+            throw new Error("File upload failed: " + e.message);
+          }
         }
       }
 
@@ -163,7 +168,12 @@ const Admin = () => {
           const uploadData = await uploadRes.json();
           finalUrl = `https://cse-rockers-server.onrender.com${uploadData.url}`;
         } else {
-          throw new Error("File upload failed");
+          try {
+            const errData = await uploadRes.json();
+            throw new Error(errData.error || "File upload failed");
+          } catch(e) {
+            throw new Error("File upload failed: " + e.message);
+          }
         }
       }
 
@@ -207,7 +217,12 @@ const Admin = () => {
           const uploadData = await uploadRes.json();
           finalUrl = `https://cse-rockers-server.onrender.com${uploadData.url}`;
         } else {
-          throw new Error("File upload failed");
+          try {
+            const errData = await uploadRes.json();
+            throw new Error(errData.error || "File upload failed");
+          } catch(e) {
+            throw new Error("File upload failed: " + e.message);
+          }
         }
       }
 

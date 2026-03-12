@@ -94,7 +94,12 @@ app.post("/api/login", (req, res) => {
 });
 
 // File Upload Endpoint
-app.post("/api/upload", authMiddleware, upload.single("pdf"), async (req, res) => {
+app.post("/api/upload", authMiddleware, (req, res, next) => {
+  upload.single("pdf")(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    next();
+  });
+}, async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
   
   // Only use Cloudinary if the user actually added the keys in Render
@@ -111,7 +116,7 @@ app.post("/api/upload", authMiddleware, upload.single("pdf"), async (req, res) =
     } catch (error) {
       console.error("Cloudinary upload error:", error);
       try { fs.unlinkSync(req.file.path); } catch (e) {}
-      return res.status(500).json({ error: "File upload failed" });
+      return res.status(500).json({ error: `Cloudinary error: ${error.message || "Upload failed"}` });
     }
   } else {
     // If Cloudinary keys are not set, fallback to the original behavior (saving locally on Render)
