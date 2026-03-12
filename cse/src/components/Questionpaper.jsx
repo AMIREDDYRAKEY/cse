@@ -14,16 +14,16 @@ const Questionpaper = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (papers.length === 0) {
-      dispatch(fetchResources('question-papers'));
-    } else {
-      setIsLoading(false);
-    }
-  }, [dispatch, papers.length]);
+    // Always fetch latest data in the background
+    dispatch(fetchResources('question-papers'));
+  }, [dispatch]);
 
   useEffect(() => {
-    if (!reduxLoading) setIsLoading(false);
-  }, [reduxLoading]);
+    // Show cached data immediately if available, or stop loading when fetch completes
+    if (papers.length > 0 || !reduxLoading) {
+      setIsLoading(false);
+    }
+  }, [papers.length, reduxLoading]);
 
   const filteredPapers = papers.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -13,16 +13,16 @@ const Syllabus = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (syllabus.length === 0) {
-      dispatch(fetchResources('syllabus'));
-    } else {
-      setLoading(false);
-    }
-  }, [dispatch, syllabus.length]);
+    // Always fetch latest data in the background
+    dispatch(fetchResources('syllabus'));
+  }, [dispatch]);
 
   useEffect(() => {
-    if (!reduxLoading) setLoading(false);
-  }, [reduxLoading]);
+    // Show cached data immediately if available, or stop loading when fetch completes
+    if (syllabus.length > 0 || !reduxLoading) {
+      setLoading(false);
+    }
+  }, [syllabus.length, reduxLoading]);
 
   return (
     <div className="bg-[#060918] min-h-screen text-white">

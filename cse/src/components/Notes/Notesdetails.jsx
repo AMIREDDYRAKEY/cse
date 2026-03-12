@@ -16,18 +16,16 @@ const Notesdetails = () => {
   const [activeSemester, setActiveSemester] = useState("All");
 
   useEffect(() => {
-    // Only fetch if notes are empty or force refresh
-    if (notes.length === 0) {
-      dispatch(fetchResources('notes'));
-    } else {
-      setLoading(false);
-    }
-  }, [dispatch, notes.length]);
+    // Always fetch latest data in the background
+    dispatch(fetchResources('notes'));
+  }, [dispatch]);
 
   useEffect(() => {
-    // Update loading state when redux finishes
-    if (!reduxLoading) setLoading(false);
-  }, [reduxLoading]);
+    // Show cached data immediately if available, or stop loading when fetch completes
+    if (notes.length > 0 || !reduxLoading) {
+      setLoading(false);
+    }
+  }, [notes.length, reduxLoading]);
 
   useEffect(() => {
     applyFilters(search, activeYear, activeSemester);

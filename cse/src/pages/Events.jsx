@@ -11,16 +11,16 @@ const Events = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (events.length === 0) {
-      dispatch(fetchResources('events'));
-    } else {
-      setLoading(false);
-    }
-  }, [dispatch, events.length]);
+    // Always fetch latest data in the background
+    dispatch(fetchResources('events'));
+  }, [dispatch]);
 
   useEffect(() => {
-    if (!reduxLoading) setLoading(false);
-  }, [reduxLoading]);
+    // Show cached data immediately if available, or stop loading when fetch completes
+    if (events.length > 0 || !reduxLoading) {
+      setLoading(false);
+    }
+  }, [events.length, reduxLoading]);
 
   return (
     <div className="bg-[#060918] min-h-screen text-white">
