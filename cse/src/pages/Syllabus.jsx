@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchResources } from "../store/slices/resourceSlice";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { HiOutlineDocumentText } from "react-icons/hi";
 
 const Syllabus = () => {
-  const [syllabus, setSyllabus] = useState([]);
+  const dispatch = useDispatch();
+  const { syllabus, loading: reduxLoading } = useSelector((state) => state.resources);
+
   const [activeSyllabus, setActiveSyllabus] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://cse-rockers-server.onrender.com/api/syllabus")
-      .then((res) => res.json())
-      .then((data) => {
-        setSyllabus(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    if (syllabus.length === 0) {
+      dispatch(fetchResources('syllabus'));
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch, syllabus.length]);
+
+  useEffect(() => {
+    if (!reduxLoading) setLoading(false);
+  }, [reduxLoading]);
 
   return (
     <div className="bg-[#060918] min-h-screen text-white">

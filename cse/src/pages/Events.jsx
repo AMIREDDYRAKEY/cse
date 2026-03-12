@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchResources } from "../store/slices/resourceSlice";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { HiOutlineCalendar, HiOutlineLocationMarker, HiOutlineClock } from "react-icons/hi";
 
 const Events = () => {
-  const [events, setEvents] = useState([]);
+  const dispatch = useDispatch();
+  const { events, loading: reduxLoading } = useSelector((state) => state.resources);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://cse-rockers-server.onrender.com/api/events")
-      .then((res) => res.json())
-      .then((data) => {
-        setEvents(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    if (events.length === 0) {
+      dispatch(fetchResources('events'));
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch, events.length]);
+
+  useEffect(() => {
+    if (!reduxLoading) setLoading(false);
+  }, [reduxLoading]);
 
   return (
     <div className="bg-[#060918] min-h-screen text-white">

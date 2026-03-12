@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchResources } from '../store/slices/resourceSlice';
 import { HiOutlineDocumentText, HiOutlineDownload, HiOutlineSearch, HiOutlineFilter, HiX } from "react-icons/hi";
 
 const Questionpaper = () => {
-  const [papers, setPapers] = useState([]);
+  const dispatch = useDispatch();
+  const { questionPapers: papers = [], loading: reduxLoading } = useSelector((state) => state.resources);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
   const [activeYear, setActiveYear] = useState("All");
@@ -10,20 +14,16 @@ const Questionpaper = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchPapers();
-  }, []);
-
-  const fetchPapers = async () => {
-    try {
-      const res = await fetch("https://cse-rockers-server.onrender.com/api/question-papers");
-      const data = await res.json();
-      setPapers(data);
-    } catch (err) {
-      console.error("Error fetching papers:", err);
-    } finally {
+    if (papers.length === 0) {
+      dispatch(fetchResources('question-papers'));
+    } else {
       setIsLoading(false);
     }
-  };
+  }, [dispatch, papers.length]);
+
+  useEffect(() => {
+    if (!reduxLoading) setIsLoading(false);
+  }, [reduxLoading]);
 
   const filteredPapers = papers.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

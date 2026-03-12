@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchResources } from "../../store/slices/resourceSlice";
 import Navbar from "../Navbar";
 import { HiOutlineDownload, HiOutlineEye, HiOutlineSearch, HiOutlineBookOpen, HiX } from "react-icons/hi";
 
 const Notesdetails = () => {
-  const [notes, setNotes] = useState([]);
+  const dispatch = useDispatch();
+  const { notes, loading: reduxLoading } = useSelector((state) => state.resources);
+
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [activeNote, setActiveNote] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,18 +16,18 @@ const Notesdetails = () => {
   const [activeSemester, setActiveSemester] = useState("All");
 
   useEffect(() => {
-    fetch("https://cse-rockers-server.onrender.com/api/notes")
-      .then((res) => res.json())
-      .then((data) => {
-        setNotes(data);
-        setFilteredNotes(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    // Only fetch if notes are empty or force refresh
+    if (notes.length === 0) {
+      dispatch(fetchResources('notes'));
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch, notes.length]);
+
+  useEffect(() => {
+    // Update loading state when redux finishes
+    if (!reduxLoading) setLoading(false);
+  }, [reduxLoading]);
 
   useEffect(() => {
     applyFilters(search, activeYear, activeSemester);
