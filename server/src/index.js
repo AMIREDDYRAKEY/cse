@@ -97,21 +97,26 @@ app.post("/api/login", (req, res) => {
 app.post("/api/upload", authMiddleware, upload.single("pdf"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
   
-  try {
-    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
-      folder: "cse_dept_uploads"
-    });
-    
-    // Delete the local file after successful upload
-    fs.unlinkSync(req.file.path);
-
-    res.json({ url: uploadResult.secure_url });
-  } catch (error) {
-    console.error("Cloudinary upload error:", error);
-    // Try to clean up local file if upload fails
-    try { fs.unlinkSync(req.file.path); } catch (e) {}
-    res.status(500).json({ error: "File upload failed" });
+  // Only use Cloudinary if the user actually added the keys in Render
+  if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_CLOUD_NAME !== "your_cloud_name_here") {
+    try {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "auto",
+        folder: "cse_dept_uploads"
+      });
+      
+      // Delete the local file after successful upload
+      fs.unlinkSync(req.file.path);
+      return res.json({ url: uploadResult.secure_url });
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      try { fs.unlinkSync(req.file.path); } catch (e) {}
+      return res.status(500).json({ error: "File upload failed" });
+    }
+  } else {
+    // If Cloudinary keys are not set, fallback to the original behavior (saving locally on Render)
+    const fileUrl = `/uploads/${req.file.filename}`;
+    return res.json({ url: fileUrl });
   }
 });
 
