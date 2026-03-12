@@ -55,8 +55,13 @@ export const contactController = {
     create: async (req, res) => {
         try {
             const item = await contactService.create(req.body);
-            // Non-blocking email send
-            sendContactEmail(req.body);
+            // Wait for email to send so we can notify client if it fails
+            const emailSent = await sendContactEmail(req.body);
+
+            if (!emailSent) {
+                return res.status(500).json({ error: "Failed to send email. Please ensure the server has valid email credentials configured in Render Environment Variables." });
+            }
+
             res.status(201).json(item);
         } catch (err) {
             res.status(400).json({ error: err.message });
