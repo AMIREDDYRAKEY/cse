@@ -104,9 +104,22 @@ app.post("/api/upload", authMiddleware, (req, res, next) => {
 }, async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
   
-  // Only use Cloudinary if the user actually added the keys in Render
-  if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_CLOUD_NAME !== "your_cloud_name_here") {
+  // Check if ALL Cloudinary keys are provided properly
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
+  const apiKey = process.env.CLOUDINARY_API_KEY?.trim();
+  const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim();
+
+  const isCloudinaryConfigured = cloudName && apiKey && apiSecret && cloudName !== "your_cloud_name_here";
+
+  if (isCloudinaryConfigured) {
     try {
+      // Re-apply config here to ensure it catches the trimmed env vars correctly
+      cloudinary.config({ 
+        cloud_name: cloudName, 
+        api_key: apiKey, 
+        api_secret: apiSecret 
+      });
+
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         resource_type: "auto",
         folder: "cse_dept_uploads"
@@ -118,10 +131,10 @@ app.post("/api/upload", authMiddleware, (req, res, next) => {
     } catch (error) {
       console.error("Cloudinary upload error:", error);
       try { fs.unlinkSync(req.file.path); } catch (e) {}
-      return res.status(500).json({ error: `Cloudinary error: ${error.message || "Upload failed"}` });
+      return res.status(500).json({ error: `Cloudinary error: ${error.message || "Upload failed"}. Please check your API keys.` });
     }
   } else {
-    // If Cloudinary keys are not set, fallback to the original behavior (saving locally on Render)
+    // If Cloudinary keys are not fully set, fallback to the original behavior (saving locally on Render)
     const fileUrl = `/uploads/${req.file.filename}`;
     return res.json({ url: fileUrl });
   }
