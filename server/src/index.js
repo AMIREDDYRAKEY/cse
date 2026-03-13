@@ -48,7 +48,9 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
+    // Remove spaces and special characters from the filename, keep it safe
+    const sanitizedName = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+    cb(null, uniqueSuffix + "-" + sanitizedName);
   }
 });
 
@@ -151,6 +153,12 @@ const uploadsPath = path.join(__dirname, "..", "uploads");
 
 // Serve static files from the frontend build directory
 app.use("/uploads", express.static(uploadsPath));
+
+// Add a fallback specifically for /uploads so it doesn't serve the React index.html
+app.all("/uploads/*", (req, res) => {
+  res.status(404).send("File not found. If this was uploaded recently, it may have been lost during a server restart. Please re-upload or configure Cloudinary.");
+});
+
 app.use(express.static(distPath));
 
 // API 404 handler - prevents returning index.html for invalid API requests
