@@ -53,6 +53,8 @@ const storage = new GridFsStorage({
   }
 });
 
+const upload = multer({ storage });
+
 // Database Connection
 async function connectDb() {
   if (!MONGODB_URI) {
@@ -148,9 +150,6 @@ const distPath = path.join(__dirname, "..", "..", "cse", "dist");
 const uploadsPath = path.join(__dirname, "..", "uploads");
 
 // Serve static files from the frontend build directory
-// Serve static files from the frontend build directory
-app.use(express.static(distPath));
-
 app.use(express.static(distPath));
 
 // API 404 handler - prevents returning index.html for invalid API requests
