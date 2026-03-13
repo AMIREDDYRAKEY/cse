@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "build": "cd ../cse && npm install && npm run build"
+    "build": "npm install && cd ../cse && npm install && npm run build"
   },
   "dependencies": {
     "cloudinary": "^2.9.0",

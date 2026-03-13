@@ -2,7 +2,8 @@
   "name": "cse-website-root",
   "private": true,
   "scripts": {
-    "start": "node server/src/index.js",
-    "build": "npm install && cd cse && npm install && npm run build && cd ../server && npm install"
+    "start": "cd server && npm start",
+    "build": "npm install --prefix server && npm install --prefix cse && npm run build --prefix cse"
   }
 }
+
