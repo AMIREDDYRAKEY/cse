@@ -9,12 +9,15 @@
     "build": "npm install && cd ../cse && npm install && npm run build"
   },
   "dependencies": {
-    "cloudinary": "^2.9.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "gridfs-stream": "^1.1.1",
+    "mongodb": "^7.1.0",
     "mongoose": "^8.23.0",
+    "mongoose-gridfs": "^1.3.0",
     "multer": "^2.1.1",
+    "multer-gridfs-storage": "^5.0.2",
     "nodemailer": "^8.0.1"
   }
 }
